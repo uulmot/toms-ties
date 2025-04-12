@@ -1,0 +1,38 @@
+/* Etsy Individual Transaction Dataset Queries */
+
+CREATE DATABASE etsy_individ_transact_data;
+
+CREATE TABLE etsy_individ_transact
+	(
+		num_id VARCHAR(20) PRIMARY KEY,
+		data_type TEXT,
+		title TEXT
+	);
+    
+ALTER TABLE etsy_individ_transact
+RENAME COLUMN data_type TO d_date;
+    
+SELECT *
+FROM etsy_individ_transact;
+
+/* Number of Face Masks Sold */
+SELECT COUNT(*)
+FROM etsy_individ_transact
+WHERE title LIKE '%Face Mask%';
+
+/* Number of Neckties Sold */
+SELECT COUNT(*)
+FROM etsy_individ_transact
+WHERE title LIKE '%Necktie%';
+
+/* Number of Face Masks Sold per Month */	
+SELECT MONTH(d_date) AS `month`, YEAR(d_date) AS `year`, COUNT(title) AS num_of_face_masks_sold
+FROM etsy_individ_transact
+WHERE title LIKE '%Face Mask%'
+GROUP BY MONTH(d_date), YEAR(d_date);
+
+/* Number of Neckties Sold per Month */
+SELECT MONTH(d_date) AS `month`, YEAR(d_date) AS `year`, COUNT(title) AS num_of_neckties_sold
+FROM etsy_individ_transact
+WHERE title LIKE '%Necktie%'
+GROUP BY MONTH(d_date), YEAR(d_date);

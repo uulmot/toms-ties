@@ -1,0 +1,62 @@
+/* Etsy Customer Behavior Dataset Queries */
+
+CREATE DATABASE etsy_customer_behavior_data;
+
+CREATE TABLE etsy_customer_behavior
+	(
+		num_id VARCHAR(15) PRIMARY KEY,
+		d_date DATE,
+		visits INT,
+		orders INT,
+		conversion_rate FLOAT,
+		revenue FLOAT,
+		repeat_buyers INT,
+		traffic_source_etsy_app_and_other_pages INT,
+		traffic_source_etsy_search INT,
+		traffic_source_etsy_marketing_and_seo INT,
+		traffic_source_direct_and_other_traffic INT,
+		traffic_source_social_media INT,
+		traffic_source_etsy_ads INT
+	);
+    
+SELECT *
+FROM etsy_customer_behavior;
+
+/* Month that Accounted for the Highest Revenue */
+
+SELECT CONCAT(MONTH(d_date), '-',YEAR(d_date)) AS `date`, revenue
+FROM etsy_customer_behavior
+ORDER BY revenue DESC;
+
+
+/* Which traffic source receieve the most number of visitors (2020-2021)? */
+SELECT 
+	SUM(traffic_source_etsy_app_and_other_pages) AS etsy_app_and_other_pages, 
+	SUM(traffic_source_etsy_search) AS etsy_search, 
+	SUM(traffic_source_etsy_marketing_and_seo) AS etsy_marketing_and_seo, 
+	SUM(traffic_source_direct_and_other_traffic) AS direct_and_other_traffic, 
+	SUM(traffic_source_social_media) AS social_media, 
+	SUM(traffic_source_etsy_ads) AS etsy_ads
+FROM etsy_customer_behavior;
+
+/* Month with Most Traffic Brought Across Platforms */
+SELECT CONCAT(MONTH(d_date), '-',YEAR(d_date)) AS `date`, 
+(etsy_app_and_other_pages + 
+etsy_search + 
+etsy_marketing_and_seo + 
+direct_and_other_traffic + 
+social_media + etsy_ads) AS total_visits_all_platforms
+FROM
+	(SELECT 
+		d_date,
+		traffic_source_etsy_app_and_other_pages AS etsy_app_and_other_pages, 
+		traffic_source_etsy_search AS etsy_search, 
+		traffic_source_etsy_marketing_and_seo AS etsy_marketing_and_seo, 
+		traffic_source_direct_and_other_traffic AS direct_and_other_traffic, 
+		traffic_source_social_media AS social_media, 
+		traffic_source_etsy_ads AS etsy_ads
+	FROM etsy_customer_behavior) AS etsy_traffic
+ORDER BY total_visits_all_platforms DESC;
+
+    
+
